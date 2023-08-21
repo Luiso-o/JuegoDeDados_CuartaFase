@@ -96,8 +96,7 @@ public class PartidaServiceJpa {
      * @return El número aleatorio generado.
      */
     private int tirarDados(){
-        return (int)Math.floor(Math.random() * 12) + 1;
+        return (int)Math.floor(Math.random() * 11) + 2;
     }
-
 
 }

@@ -33,22 +33,12 @@ public class JwtService {
         return getToken(new HashMap<>(),user);
     }
 
-    private String getToken(Map<String,Object> extractClaims, UserDetails user) {
-        return Jwts.builder()
-                .setClaims(extractClaims)
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     /**
      * Obtiene una clave a partir de la clave secreta en formato base64.
      *
      * @return La clave generada a partir de la clave secreta.
      */
-    private Key getKey() {
+    public Key getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -73,24 +63,6 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    /**
-     * Obtiene todas las reclamaciones (claims) contenidas en un token JWT.
-     *
-     * @param token El token JWT del que se extraerán las reclamaciones.
-     * @return Las reclamaciones (claims) contenidas en el token JWT.
-     * @throws io.jsonwebtoken.MalformedJwtException Si el token JWT está mal formado o no puede ser analizado correctamente.
-     * @throws io.jsonwebtoken.ExpiredJwtException Si el token JWT ha expirado.
-     * @throws io.jsonwebtoken.UnsupportedJwtException Si el token JWT tiene un formato o contenido no soportado.
-     */
-    private Claims getAllClaims(String token){
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
     }
 
     /**
@@ -131,8 +103,44 @@ public class JwtService {
      * @throws io.jsonwebtoken.ExpiredJwtException Si el token JWT ha expirado.
      * @throws io.jsonwebtoken.UnsupportedJwtException Si el token JWT tiene un formato o contenido no soportado.
      */
-    private boolean isTokenExpired(String token){
+    public boolean isTokenExpired(String token){
         return getExpiration(token).before(new Date());
+    }
+
+//metodos privados------------------------------------------------------------------->
+    /**
+     * Obtiene todas las reclamaciones (claims) contenidas en un token JWT.
+     *
+     * @param token El token JWT del que se extraerán las reclamaciones.
+     * @return Las reclamaciones (claims) contenidas en el token JWT.
+     * @throws io.jsonwebtoken.MalformedJwtException Si el token JWT está mal formado o no puede ser analizado correctamente.
+     * @throws io.jsonwebtoken.ExpiredJwtException Si el token JWT ha expirado.
+     * @throws io.jsonwebtoken.UnsupportedJwtException Si el token JWT tiene un formato o contenido no soportado.
+     */
+    private Claims getAllClaims(String token){
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    /**
+     * Genera un token JWT para el usuario proporcionado con reclamos adicionales personalizados.
+     *
+     * @param extractClaims Los reclamos adicionales que se incluirán en el token.
+     * @param user El objeto UserDetails que representa al usuario para el cual se generará el token.
+     * @return El token JWT generado.
+     */
+    private String getToken(Map<String, Object> extractClaims, UserDetails user) {
+        return Jwts.builder()
+                .setClaims(extractClaims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
 }

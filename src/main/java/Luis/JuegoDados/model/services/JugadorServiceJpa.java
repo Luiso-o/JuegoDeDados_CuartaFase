@@ -7,8 +7,10 @@ import Luis.JuegoDados.model.entity.Role;
 import Luis.JuegoDados.model.repository.JugadorRepositoryJpa;
 import Luis.JuegoDados.model.repository.PartidaRepositoryJpa;
 import Luis.JuegoDados.model.dto.AuthResponse;
-import lombok.AllArgsConstructor;
+
 import lombok.Builder;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +20,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Builder
 @Service
 public class JugadorServiceJpa {
 
-    private JugadorRepositoryJpa jugadorRepositoryJpa;
-    private PartidaRepositoryJpa partidaRepositoryJpa;
-    private PasswordEncoder passwordEncoder;
+    private final JugadorRepositoryJpa jugadorRepositoryJpa;
+    private final PartidaRepositoryJpa partidaRepositoryJpa;
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    /**
+     * Registra un nuevo usuario en el sistema.
+     *
+     * @param nombre El nombre del usuario a registrar.
+     * @param email El correo electrónico del usuario a registrar.
+     * @param password La contraseña del usuario a registrar.
+     * @return Una instancia de AuthResponse que contiene el token generado para el usuario registrado.
+     */
     public AuthResponse register(String nombre, String email, String password){
         JugadorEntityJpa usuario = JugadorEntityJpa.builder()
                 .email(email)
@@ -45,27 +55,21 @@ public class JugadorServiceJpa {
     }
 
     /**
-     * Busca y devuelve un jugador por su ID.
+     * Busca un jugador por su ID en la base de datos.
      *
-     * @param id El ID del jugador que se desea buscar.
-     * @return El objeto JugadorEntityJpa que representa al jugador con el ID especificado.
+     * @param id El ID del jugador a buscar.
+     * @return El jugador correspondiente al ID proporcionado.
      * @throws NotFoundException Si la lista de jugadores está vacía.
      * @throws RuntimeException Si no se encuentra un jugador con el ID proporcionado.
      */
     public JugadorEntityJpa buscarJugadorPorId(Long id){
+        List<JugadorEntityJpa> misJugadores = jugadorRepositoryJpa.findAll();
 
-        try {
-            List<JugadorEntityJpa> misJugadores = jugadorRepositoryJpa.findAll();
-
-            if (misJugadores.isEmpty()) {
-                throw new NotFoundException("Lista de jugadores vacía");
-            }
-        } catch (NotFoundException e) {
+        if (misJugadores.isEmpty()) {
             throw new NotFoundException("Lista de jugadores vacía");
         }
-
-     return jugadorRepositoryJpa.findById(id)
-             .orElseThrow(() -> new RuntimeException("No se encontró el jugador con el ID proporcionado."));
+        return jugadorRepositoryJpa.findById(id)
+                .orElseThrow(() -> new RuntimeException("No se encontró el jugador con el ID proporcionado."));
     }
 
     /**
