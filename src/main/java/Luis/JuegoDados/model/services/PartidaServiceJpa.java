@@ -1,5 +1,6 @@
 package Luis.JuegoDados.model.services;
 
+import Luis.JuegoDados.exceptions.PlayerHasNoGamesException;
 import Luis.JuegoDados.model.dto.PartidaDtoJpa;
 import Luis.JuegoDados.model.entity.JugadorEntityJpa;
 import Luis.JuegoDados.model.entity.PartidaEntityJpa;
@@ -50,7 +51,7 @@ public class PartidaServiceJpa {
     public void eliminarPartidasDeJugador(JugadorEntityJpa jugador){
         List<PartidaEntityJpa> misPartidas = partidaRepositoryJpa.findByJugador(jugador);
         if (misPartidas.isEmpty()) {
-            throw new RuntimeException("El jugador no tiene partidas que eliminar");
+            throw new PlayerHasNoGamesException(jugador.getNombre());
         }
         misPartidas.forEach(partida -> partidaRepositoryJpa.delete(partida));
         jugadorRepositoryJpa.save(jugador);
@@ -66,7 +67,7 @@ public class PartidaServiceJpa {
     public List<PartidaDtoJpa> encuentraPartidasJugador(JugadorEntityJpa jugador){
         List<PartidaEntityJpa> misPartidas = partidaRepositoryJpa.findByJugador(jugador);
         if(misPartidas.isEmpty()){
-            throw new NotFoundException("No se le encontraron partidas a este jugador");
+            throw new PlayerHasNoGamesException(jugador.getNombre());
         }
 
         return misPartidas.stream()

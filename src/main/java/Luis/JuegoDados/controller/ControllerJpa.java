@@ -1,5 +1,6 @@
 package Luis.JuegoDados.controller;
 
+import Luis.JuegoDados.exceptions.PlayerHasNoGamesException;
 import Luis.JuegoDados.model.dto.JugadorDtoJpa;
 import Luis.JuegoDados.model.dto.PartidaDtoJpa;
 import Luis.JuegoDados.model.entity.JugadorEntityJpa;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,7 @@ import java.util.Map;
 @RestController
 @AllArgsConstructor
 @Builder
-@RequestMapping("Jugador")
+@RequestMapping("jugador")
 @SecurityRequirement(name = "bearerauth")
 public class ControllerJpa {
 
@@ -84,10 +86,17 @@ public class ControllerJpa {
     @ApiResponse(responseCode = "200", description = "Partidas encontradas con éxito")
     @ApiResponse(responseCode = "500", description = "Error interno, Revise response status 500")
     @GetMapping("/{id}/partidas")
-    public ResponseEntity<List<PartidaDtoJpa>> muestraPartidasJugador(@PathVariable long id){
+    public ResponseEntity<?> muestraPartidasJugador(@PathVariable long id) {
         JugadorEntityJpa jugador = jugadorServiceJpa.buscarJugadorPorId(id);
-        List<PartidaDtoJpa> partidas = partidaServiceJpa.encuentraPartidasJugador(jugador);
-        return ResponseEntity.ok(partidas);
+        try {
+            List<PartidaDtoJpa> partidas = partidaServiceJpa.encuentraPartidasJugador(jugador);
+            return ResponseEntity.ok(partidas);
+        } catch (PlayerHasNoGamesException ex) {
+            String errorMessage = ex.getMessage();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
     }
 
    @Operation(summary = "Ranking de victorias",description = "Muestra el porcentaje total de victorias de todos los jugadores")

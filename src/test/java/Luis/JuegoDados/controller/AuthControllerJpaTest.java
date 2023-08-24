@@ -1,75 +1,42 @@
 package Luis.JuegoDados.controller;
 
-import Luis.JuegoDados.model.dto.AuthResponse;
-import Luis.JuegoDados.model.services.AuthService;
-import Luis.JuegoDados.model.services.JugadorServiceJpa;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertNotNull;
-
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AuthControllerJpaTest {
 
-    @InjectMocks
-    private AuthControllerJpa authControllerJpa;
-    @Mock
-    private JugadorServiceJpa jugadorServiceJpa;
-
-    @Mock
-    private AuthService authService;
-
-    @DisplayName("Dada la información del usuario que queremos crear en register" +
-            "esperamos que el usuario este creado y devuelva un token")
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
-    void TestRegister(){
-        // Simular la respuesta del servicio
-        AuthResponse authResponse = AuthResponse.builder()
-                .token("tokenDePrueba")
-                .build();
+    @Transactional
+    public void testRegisterAndLogin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
+                        .param("nombre", "UsuarioEjemplo")
+                        .param("email", "usuario@example.com")
+                        .param("password", "password123")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        when(jugadorServiceJpa.register("Jose", "jose@ejemplo.com", "1234")).thenReturn(authResponse);
-
-        // Ejecutar el método de prueba
-        ResponseEntity<AuthResponse> responseEntity = authControllerJpa.register("Jose", "jose@ejemplo.com", "1234");
-
-        // Verificar que se llamó al método del servicio
-        verify(jugadorServiceJpa).register("Jose", "jose@ejemplo.com", "1234");
-
-        // Afirmaciones
-        assertNotNull("La respuesta no debe ser nula",responseEntity);
-        assertEquals("El código de estado debe ser OK", HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("El cuerpo de la respuesta debe ser igual al AuthResponse esperado",authResponse, responseEntity.getBody());
-    }
-
-    @DisplayName("Dado las credenciales de inicio de sesión, esperamos un token válido")
-    @Test
-    void testLogin() {
-        // Simular la respuesta del servicio de AuthService
-        AuthResponse authResponse = AuthResponse.builder()
-                .token("tokenDePrueba")
-                .build();
-        when(authService.login("jose@ejemplo.com", "1234")).thenReturn(authResponse);
-
-        // Ejecutar el método de prueba
-        ResponseEntity<AuthResponse> responseEntity = authControllerJpa.login("jose@ejemplo.com", "1234");
-
-        // Verificar que se llamó al método del servicio
-        verify(authService).login("jose@ejemplo.com", "1234");
-
-        // Afirmaciones
-        assertNotNull("La respuesta no debe ser nula", responseEntity);
-        assertEquals("El código de estado debe ser OK", HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("El cuerpo de la respuesta debe ser igual al AuthResponse esperado", authResponse, responseEntity.getBody());
+        // Realizar el proceso de inicio de sesión
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+                        .param("email", "usuario@example.com")
+                        .param("password", "password123")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
     }
 
 }

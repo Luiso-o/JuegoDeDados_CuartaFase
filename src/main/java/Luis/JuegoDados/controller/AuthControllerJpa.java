@@ -33,4 +33,5 @@ public class AuthControllerJpa {
         return ResponseEntity.ok(authService.login(email, password));
     }
 
+
 }

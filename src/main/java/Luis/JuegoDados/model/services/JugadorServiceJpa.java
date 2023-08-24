@@ -1,5 +1,7 @@
 package Luis.JuegoDados.model.services;
 
+import Luis.JuegoDados.exceptions.PlayerListEmptyException;
+import Luis.JuegoDados.exceptions.PlayerNotFoundException;
 import Luis.JuegoDados.model.dto.JugadorDtoJpa;
 import Luis.JuegoDados.model.entity.JugadorEntityJpa;
 import Luis.JuegoDados.model.entity.PartidaEntityJpa;
@@ -66,10 +68,10 @@ public class JugadorServiceJpa {
         List<JugadorEntityJpa> misJugadores = jugadorRepositoryJpa.findAll();
 
         if (misJugadores.isEmpty()) {
-            throw new NotFoundException("Lista de jugadores vacía");
+            throw new PlayerListEmptyException();
         }
         return jugadorRepositoryJpa.findById(id)
-                .orElseThrow(() -> new RuntimeException("No se encontró el jugador con el ID proporcionado."));
+                .orElseThrow(() -> new PlayerNotFoundException(id));
     }
 
     /**
@@ -107,7 +109,7 @@ public class JugadorServiceJpa {
     public List<JugadorDtoJpa> listaJugadores() {
         List<JugadorEntityJpa> jugadores = jugadorRepositoryJpa.findAll();
         if (jugadores.isEmpty()) {
-            throw new NotFoundException("Lista de Jugadores vacía");
+            throw new PlayerListEmptyException();
         }
         return jugadores.stream().map(this::pasarEntidadADto)
                 .collect(Collectors.toList());
@@ -140,7 +142,7 @@ public class JugadorServiceJpa {
         int porcentajeMasBajo = 100; //Partimos con el porcentaje más alto
 
         if (todosLosJugadores.isEmpty()) {
-          throw  new NotFoundException("No hay jugadores en la base de datos");
+          throw new PlayerListEmptyException();
         }
 
         for (JugadorEntityJpa jugador : todosLosJugadores) {
@@ -171,7 +173,7 @@ public class JugadorServiceJpa {
         int porcentajeMasAlto = 0; // Partimos con el porcentaje más bajo
 
         if (todosLosJugadores.isEmpty()) {
-            throw new NotFoundException("No hay jugadores en la base de datos");
+            throw new PlayerListEmptyException();
         }
 
         for (JugadorEntityJpa jugador : todosLosJugadores) {

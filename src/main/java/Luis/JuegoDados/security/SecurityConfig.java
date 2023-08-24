@@ -36,7 +36,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("v3/api-docs/**",
-                                "swagger-ui/**","auth/**").permitAll()
+                                "swagger-ui/**","auth/**","auth/register/**",
+                                        "auth/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -48,5 +49,4 @@ public class SecurityConfig {
                 .build();
 
     }
-
 }
