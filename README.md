@@ -40,23 +40,24 @@ Añade tests unitarios, de componente y de integración al proyecto con librerí
 Añade Mocks al testing del proyecto (Mockito) y Contract Tests (https://docs.pact.io/)
 
 -DEPARTAMENTOS
-![CapturaDto](https://github.com/Luiso-o/JuegoDeDados_Cuarta_Fase_ApiRest/assets/128043647/74d88778-4cdb-4cb5-a412-5503b1f55b23)
+![TestUnitariosDTO](https://github.com/Luiso-o/JuegoDeDados_CuartaFase/assets/128043647/ac09ff06-d942-4b91-8b09-c1e9fd01cc4c)
 
 ENTIDADES
-![CapturaEntity](https://github.com/Luiso-o/JuegoDeDados_Cuarta_Fase_ApiRest/assets/128043647/a3dd7dab-52ee-4079-95bd-24ade070c1fa)
+![TestUnitariosEntidades](https://github.com/Luiso-o/JuegoDeDados_CuartaFase/assets/128043647/b6f66467-8552-48e1-9885-f22ba837f796)
 
 SERVICIOS
-![CapturaServices](https://github.com/Luiso-o/JuegoDeDados_Cuarta_Fase_ApiRest/assets/128043647/e907e314-2a6c-4df7-9a7b-8f22843202cb)
+![TestUnitariosServicios](https://github.com/Luiso-o/JuegoDeDados_CuartaFase/assets/128043647/b9f343a9-04a7-467d-a648-27674d0a1e76)
 
 REPOSITORIOS
-![CapturaRepository](https://github.com/Luiso-o/JuegoDeDados_Cuarta_Fase_ApiRest/assets/128043647/c189195f-5d84-4df3-8013-be62351ae438)
+![TestUnitariosRepositorios](https://github.com/Luiso-o/JuegoDeDados_CuartaFase/assets/128043647/e8c1fa83-8636-4885-b7c5-45af1a4b8159)
 
 CONTROLADORES
-![CapturaControllers](https://github.com/Luiso-o/JuegoDeDados_Cuarta_Fase_ApiRest/assets/128043647/b9249983-fb2b-4b93-97b1-159f15bbd027)
+![TestDeIntegracionControladores](https://github.com/Luiso-o/JuegoDeDados_CuartaFase/assets/128043647/25693703-e3eb-4c22-acf6-39b20685df6e)
 
 SEGURIDAD
-![CapturaSecurity](https://github.com/Luiso-o/JuegoDeDados_Cuarta_Fase_ApiRest/assets/128043647/e89c2dc0-01da-4275-aa42-d711a279912c)
+![TestUnitariosSeguridad](https://github.com/Luiso-o/JuegoDeDados_CuartaFase/assets/128043647/7db4be49-56ab-4e30-9971-2b4dec35d58d)
 
 EXCEPCIONES
-![CapturaExcepciones](https://github.com/Luiso-o/JuegoDeDados_Cuarta_Fase_ApiRest/assets/128043647/9d9aeb2f-5bf0-41d0-a10d-d6db3788ae8c)
+![TestUnitariosExcepciones](https://github.com/Luiso-o/JuegoDeDados_CuartaFase/assets/128043647/589194b6-9df7-47a6-8e15-7ecd470fb55b)
+
 
